@@ -5,15 +5,17 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { ENV } from '../config/env';
 import firebase from 'firebase';
-
-import { HomePage } from '../pages/home/home';
+import { Storage } from '@ionic/storage';
+import { AngularFireModule } from 'angularfire2';
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = HomePage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  rootPage:any;
+
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,
+              private storage: Storage) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -21,6 +23,23 @@ export class MyApp {
       splashScreen.hide();
     });
 
-    firebase.initializeApp(ENV.firebase);
+    //AngularFireModule.initializeApp(ENV.firebase)
   }
+
+  ngOnInit() {
+    this.storage.get('store').then((val) => {
+      if(val === null){
+        console.log('No store chosen');
+        
+        this.rootPage = 'ChooseStorePage';
+      }else{
+        console.log('Your store is ' + val);
+        this.rootPage = 'TabsPage';
+      }
+  });
+
+    
+  }
+
+
 }
