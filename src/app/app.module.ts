@@ -12,13 +12,8 @@ import { FirebaseProvider } from '../providers/firebase/firebase';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { ENV } from '../config/env';
+import { firebaseConfig } from '../config/env';
 
-export const firebaseConfig = {
-  apiKey: "AIzaSyCcW9VRqCQ_YUAuSYDp35IUYohThdBz2CI",
-  authDomain: "auntie-anns.firebaseapp.com",
-  projectId: "auntie-anns",
-};
 
 @NgModule({
   declarations: [
