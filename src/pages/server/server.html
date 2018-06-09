@@ -22,7 +22,8 @@
         <ion-item>
       <ion-row text-center>
         <ion-col><h1><strong>Product</strong></h1></ion-col>
-        <ion-col><h1><strong>Quantity</strong></h1></ion-col>
+        <ion-col *ngIf="store=='CB'"><h1><strong>Qty In Stock</strong></h1></ion-col>
+        <ion-col><h1><strong>Qty In Oven</strong></h1></ion-col>
         <ion-col><h1><strong>Time To Ready</strong></h1></ion-col>
    
       </ion-row>
@@ -34,6 +35,9 @@
         <ion-row >
           <ion-col text-center>
             {{session.product.name}}
+          </ion-col>
+          <ion-col *ngIf="store=='CB'">
+            test
           </ion-col>
           <ion-col text-center>
           {{session.quantity.Quantity}}
@@ -52,5 +56,5 @@
   
     </ion-list>
   
-  
+
   </ion-content>

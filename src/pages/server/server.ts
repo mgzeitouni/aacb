@@ -4,6 +4,8 @@ import { ovenSession } from '../../classes/ovenSession';
 import { FirebaseProvider } from '../../providers/firebase/firebase';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
+import {TimerObservable} from "rxjs/observable/TimerObservable";
+import {Subscription} from "rxjs";
 
 /**
  * Generated class for the ServerPage page.
@@ -55,16 +57,23 @@ export class ServerPage  {
   ionViewDidLoad() {
     console.log('ionViewDidLoad ServerPage');
 
+    // Other timer option
+    // let timer = TimerObservable.create(0, 1000);
+    // this.subscription = timer.subscribe(t => {
+    //   this.tick = this.start-t;
+    // });
+
   }
+  // private tick: number;
+  // private subscription: Subscription;
+  // private start:number=1000;
 
   subscribeToData(){
 
     this.storage.get('store').then(store=>{
 
       this.ovenSessions$ = this.firebase.getOvenSessions(store);
-      this.ovenSessions$.subscribe(sessions=>{
-        console.log(sessions)
-        
+      this.ovenSessions$.subscribe(sessions=>{        
         this.sessions=sessions;
         this.updateTimeLeft();
       
@@ -80,7 +89,7 @@ export class ServerPage  {
 
    this.sessions.map(session=>{
       
-    var ovenTimeSeconds = session.product.oven_time * 60000;
+    var ovenTimeSeconds = session.product.oven_time_min* 60000;
 
     var end_time = Number((new Date(session.start_time).getTime())) + ovenTimeSeconds;
 
@@ -116,7 +125,7 @@ filterSessions(){
   )
 
   var filtered = filtered.filter((session)=>
-  session.deleted == false
+  session.baker_deleted == false
   )
   this.sessions=filtered;
 

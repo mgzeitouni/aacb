@@ -52,9 +52,25 @@ export class FirebaseProvider {
     var date= d.getMonth()+1+"-"+d.getDate()+"-"+d.getFullYear();
 
     var ovenSessionsCollectionRef = this.afs.collection<ovenSession>('ovenSessions', ref=> {
-      return ref.where('formattedDate','==',date)
-                .where("deleted",'==',false)
+      return ref.where('formatted_date','==',date)
+                .where("baker_deleted",'==',false)
                 .where("product.company","==",company)
+
+    });
+
+    return ovenSessionsCollectionRef.valueChanges();
+  }
+
+  readyCBOvenSessions(): Observable<ovenSession[]>{
+    var d = new Date();
+    var date= d.getMonth()+1+"-"+d.getDate()+"-"+d.getFullYear();
+
+    var ovenSessionsCollectionRef = this.afs.collection<ovenSession>('ovenSessions', ref=> {
+      return ref.where('formatted_date','==',date)
+                .where("baker_deleted",'==',false)
+                .where("product.company","==",'CB')
+                .where("end_time","<",Date.now())
+                .where("cinnabon_delivered","==",false)
 
     });
 
@@ -66,12 +82,12 @@ export class FirebaseProvider {
     var d = new Date();
     var date= d.getMonth()+1+"-"+d.getDate()+"-"+d.getFullYear();
 
-    session.deleted=true;
+    session.baker_deleted=true;
 
     var ovenSessionsCollectionRef = this.afs.collection('ovenSessions').doc(session.id)
     
     ovenSessionsCollectionRef.update({
-      deleted:true
+      baker_deleted:true
     });
 
       

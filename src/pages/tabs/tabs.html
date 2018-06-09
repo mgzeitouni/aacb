@@ -7,11 +7,11 @@
   
   <ion-content>
     <ion-list>
-      <ion-item (click)="openPage('AuntieAnns')">
+      <ion-item (click)="openPage('AA')">
         <ion-icon item-left></ion-icon>
        Auntie Anns
       </ion-item>
-      <ion-item (click)="openPage('Cinnabon')">
+      <ion-item (click)="openPage('CB')">
           <ion-icon item-left></ion-icon>
          Cinnabon
         </ion-item>
@@ -25,5 +25,5 @@
 
 <ion-tabs #content >
 <ion-tab  [root]="tab1Root" tabTitle="Baker" text-left ></ion-tab>
-<ion-tab  [root]="tab2Root" tabTitle="Server" text-center></ion-tab>
+<ion-tab  [root]="tab2Root" tabTitle="Server" justify-text-center></ion-tab>
 </ion-tabs>

@@ -18,14 +18,16 @@ export class BakerPage {
 
   cardsPerRow:number=2;
 
-  productCollectionRef: AngularFirestoreCollection<Product>;
   product$: Observable<Product[]>;
   products: Product[]=[];
-  hey: Product[]=[];
   store:string;
   selectedProduct: Product;
   quantity:number;
 
+  readyCBOvenSession$: Observable<ovenSession[]>;
+  readyCBOvenSessions: ovenSession[];
+
+  readyQuantities: any={};
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,  
@@ -35,10 +37,7 @@ export class BakerPage {
   private cd: ChangeDetectorRef,
   private http: HttpClient) {
 
-    // .subscribe(val=>{
-    //   console.log(val)
-    //   this.loaded=true;
-    // });
+
 
   }
 
@@ -67,28 +66,66 @@ export class BakerPage {
 
         })
 
+        // Get CB ready ovenSessions
+        if (store=='CB'){
+          that.readyCBOvenSession$ = that.firebase.readyCBOvenSessions();
+          that.readyCBOvenSession$.subscribe(ready=>{
+            
+            that.readyCBOvenSessions = ready;
+            
+            that.readyQuantities = {};
+
+            for (let session of that.readyCBOvenSessions ){
+
+              // If object not populated with this product, make it
+              if ( !(session.product.id in that.readyQuantities)){
+                that.readyQuantities[session.product.id ]= that.readyQuantities[session.quantity ];
+              }else{
+                // Else, add to exiting
+                that.readyQuantities[session.product.id ]= that.readyQuantities[session.product.id ]+that.readyQuantities[session.quantity ];
+              }
+
+            }
+            
+          })
+        }
+
     })
 
   }
 
+  getQty(product){
+
+    return (product.id in this.readyQuantities) ? this.readyQuantities[product.id] : 0
+  }
+
   startOven(){
     const date = new Date();
-    var formattedDate= date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
+    var formatted_date= date.getMonth()+1+"-"+date.getDate()+"-"+date.getFullYear();
 
-    var end_time = date.getTime()+(this.selectedProduct.oven_time*60000);
+    var end_time = date.getTime()+(this.selectedProduct.oven_time_min*60000);
+
     var session = new ovenSession(
-      formattedDate,
+      formatted_date,
       this.selectedProduct,  
       date.toString(),
-       this.quantity,
+      parseInt(this.quantity.toString()),
        "",
        end_time,
       false)
+
+      console.log(session)
     this.firebase.addOvenSession(session);
 
     }
            
+    clickOven(event: Event, product){
 
+      this.selectedProduct=product;
+      this.presentPrompt()
+    
+      
+    }
 
   pairUpProducts(products){
     var productPairs= [];
@@ -136,7 +173,7 @@ export class BakerPage {
         {
           text: 'Start Oven',
           handler: data => {
-            this.quantity=data;
+            this.quantity=data.Quantity;
           this.startOven();
           }
         }
@@ -145,7 +182,6 @@ export class BakerPage {
 
     alert.present().then(() => {
       const firstInput: any = document.querySelector('ion-alert input');
-      console.log(firstInput)
       firstInput.focus();
       return;
     });

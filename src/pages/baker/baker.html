@@ -21,15 +21,45 @@
       <ion-row *ngFor="let productPair of products">
 
         <ion-col col-6 no-padding *ngFor="let product of productPair">
-          <ion-card  (click)="selectedProduct=product; presentPrompt()">
+          <ion-card  (click)="clickOven($event,product) ">
             <ion-card-content>
               <ion-item>
-                <h2 text-center>{{product.name}}</h2>
+               <strong> <h1 *ngIf="store=='AA'" text-center>{{product.name}}</h1></strong>
+
+                <ion-grid *ngIf="store=='CB'" >
+                   
+                  <ion-row justify-content-center >
+                      <h1><strong>{{product.name}}</strong> </h1>
+                  </ion-row>
+                  <br>
+                  <ion-row>
+                      <ion-col offset-1 style="color:rgb(130,218,108);">
+                          <strong><span>Qty Ready: {{getQty(product)}}</span></strong> 
+                      </ion-col>
+                     <ion-col offset-1 style="color:rgb(97,135,247);">
+                        <strong><span>Qty Baking:</span></strong> 
+                     </ion-col>
+                  </ion-row>
+                  <br>
+                  <ion-row>
+                    
+                    <ion-col>
+                        <button ion-button round (click)="deliverCB()" color="secondary" style="width:80%;">Deliver to Servers</button>
+                    </ion-col>
+                   <ion-col>
+                      <button ion-button round (click)="clickOven($event,product); $event.stopPropagation();" style="width:80%;">Start Oven</button>
+                   </ion-col>
+                  </ion-row>
+
+
+                </ion-grid>
+
               </ion-item>
             </ion-card-content>
           </ion-card>
     </ion-col>
   </ion-row> 
 </ion-grid>
-
+<p>{{readyQuantities | json}}</p>
 </ion-content>
+
